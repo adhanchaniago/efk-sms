@@ -87,10 +87,34 @@ $csrf_hash = $this->security->get_csrf_hash();
                                  <span class="help-block" id="error"></span>
                             </div>
                             </div>
-                             <div class="col-md-3">
+                          <div class="col-md-3">
                                 <div class="form-group">
                                 <label class="control-label">Jumlah</label>
-                                <input type="number" name="qty" class="form-control" id="qty" placeholder="100" maxlength="5" min="0" max="99999" value="<?=$get_barang['qty'];?>"/>
+                               
+                          
+                            <span class="editable-container editable-inline">
+                              <div>
+                                <div class="editableform-loading" style="display: none;">
+                                  <i class="ace-icon fa fa-spinner fa-spin fa-2x light-blue">
+                                    
+                                  </i></div>
+                                  <div class="control-group form-group">
+                                    <div>
+                                      <div class="editable-input">
+                                        <div class="ace-spinner middle touch-spinner" style="width: 140px;">
+                                          <div class="input-group">
+                                            <div class="spinbox-buttons input-group-btn">         <button type="button" class="btn spinbox-down btn-sm btn-danger" id="min">          
+                                             <i class="icon-only  ace-icon fa fa-minus"></i>         </button>       
+                                           </div>
+                                           <input type="number" name="qty" class="form-control" id="qty" placeholder="100" maxlength="5" min="1" max="99999" value="<?=$get_barang['qty'];?>"/>
+
+                                           <div class="spinbox-buttons input-group-btn">        
+                                             <button type="button" class="btn spinbox-up btn-sm btn-success" id="plus">            
+                                              <i class="icon-only  ace-icon fa fa-plus"></i>          </button>       </div>
+
+                                            </div></div></div></span>
+                                             <span class="help-block" id="error"></span><div class="editable-buttons"></div></div><div class="editable-error-block help-block" style="display: none;"></div></div></div>
+                         
                                  <span class="help-block" id="error"></span>
                             </div>
                             </div>

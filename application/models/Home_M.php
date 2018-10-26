@@ -8,6 +8,19 @@ Class Home_M extends CI_Model{
 	}
 
 	
+	public function getReport($tgl_awal, $tgl_akhir){
+        
+        $this->db->select('mb.nama_barang, a.nama_anggota, ts.*');
+        $this->db->from('transaksi_stock ts');
+        $this->db->join('master_barang mb' ,'mb.id_barang = ts.id_barang', 'inner');
+        $this->db->join('anggota a' ,'a.no_hp = ts.created_by', 'inner');
+        $this->db->where('ts.created_time >=', $tgl_awal);
+        $this->db->where('ts.created_time <=', $tgl_akhir);
+        $query = $this->db->get();
+       	$data = $query->result_array();
+        return $data;
+    }
+	
 	public function getProfil($no_hp){
 		/*================ Fungsi untuk GET DATA Departemen ================*/
 
@@ -49,7 +62,7 @@ Class Home_M extends CI_Model{
         $this->db->select('mb.id_barang, mb.nama_barang, mk.nama_kategori, mk.id_kategori,
          mb.qty');
         $this->db->from('master_barang mb');
-        $this->db->join('master_kategori mk' ,'mk ON mb.id_kategori=mk.id_kategori', 'inner');
+        $this->db->join('master_kategori mk' ,'mb.id_kategori=mk.id_kategori', 'inner');
         //$this->db->where('mb.id_barang', $id);
         $this->db->where('mb.deleted', '0');
         //$this->db->group_by('mk.nama_kategori');
@@ -57,7 +70,7 @@ Class Home_M extends CI_Model{
         //$this->db->where('mk.nama_kategori', $kategori);
         //$this->db->limit(1);
          $query = $this->db->get();
-       	$data = json_encode($query->result());
+       	$data = json_encode($query->result_array());
         return $data;
     }
 
@@ -80,7 +93,7 @@ Class Home_M extends CI_Model{
         $this->db->select('mb.id_barang, mb.nama_barang, mk.nama_kategori, mk.id_kategori,
          mb.qty');
         $this->db->from('master_barang mb');
-        $this->db->join('master_kategori mk' ,'mk ON mb.id_kategori=mk.id_kategori', 'inner');
+        $this->db->join('master_kategori mk' ,'mb.id_kategori=mk.id_kategori', 'inner');
         $this->db->where('mb.id_barang', $id);
         $this->db->where('mb.deleted', '0');
         $this->db->limit(1);
@@ -111,7 +124,7 @@ Class Home_M extends CI_Model{
         $this->db->select('mb.id_barang, mb.nama_barang, mk.nama_kategori, mk.id_kategori,
          mb.qty');
         $this->db->from('master_barang mb');
-        $this->db->join('master_kategori mk' ,'mk ON mb.id_kategori=mk.id_kategori', 'inner');
+        $this->db->join('master_kategori mk' ,'mb.id_kategori=mk.id_kategori', 'inner');
         $this->db->where('mb.id_barang', $id);
         $this->db->where('mb.deleted', '0');
         //$this->db->where('mk.nama_kategori', $kategori);
@@ -166,8 +179,18 @@ Class Home_M extends CI_Model{
     }
 
    public function tambahStock($qty,$id,$sign,$note,$date,$keterangan,$no_hp){
-        
-       $this->db->trans_start();
+       $array = array(	'id' => $id,
+       					'qty_in' => $qty,
+       					'sign' => $sign,
+       					'note' => $note,
+       					'tanggal' => $date,
+       					'keterangan' => $keterangan,
+       					'no_hp' => $no_hp
+
+   						);
+       $data = $this->db->query("CALL `SPTambahStock`(?,?,?,?,?,?,?)",$array);
+       return $data;
+       /*$this->db->trans_start();
        $a = $this->db->query("select qty from master_barang where id_barang=$id");
 		
 		foreach ($a->result() as $data) {
@@ -183,13 +206,23 @@ Class Home_M extends CI_Model{
 
 		$this->db->query("insert into transaksi_stock (id_barang, in_stock, on_stock, stock_before, sign, notes, keterangan, created_time, created_by) VALUES ($id, $qty, $on_stock, $stock_before, '$sign', '$note', '$keterangan','$date' ,'$no_hp')");
 		//$this->db->query('AND YET ANOTHER QUERY...');
-		return $this->db->trans_complete(); 
+		return $this->db->trans_complete(); */
         
   }
 
   public function kurangStock($qty,$id,$sign,$note,$date,$keterangan,$no_hp){
-        
-        $this->db->trans_start();
+        $array = array(	'id' => $id,
+       					'qty_out' => $qty,
+       					'sign' => $sign,
+       					'note' => $note,
+       					'tanggal' => $date,
+       					'keterangan' => $keterangan,
+       					'no_hp' => $no_hp
+
+   						);
+       $data = $this->db->query("CALL `SPKurangStock`(?,?,?,?,?,?,?)",$array);
+       return $data;
+        /*$this->db->trans_start();
        $a = $this->db->query("select qty from master_barang where id_barang=$id");
 		
 		foreach ($a->result() as $data) {
@@ -205,7 +238,7 @@ Class Home_M extends CI_Model{
 
 		$this->db->query("insert into transaksi_stock (id_barang, out_stock, on_stock, stock_before, sign, notes, keterangan, created_time, created_by) VALUES ($id, $qty, $on_stock, $stock_before, '$sign', '$note', '$keterangan','$date' ,'$no_hp')");
 		//$this->db->query('AND YET ANOTHER QUERY...');
-		return $this->db->trans_complete(); 
+		return $this->db->trans_complete(); */
         
   }
 
@@ -240,50 +273,9 @@ Class Home_M extends CI_Model{
 
     	return $kode_otomatis;
     }
+    
+    
 
-	public function getTipeer(){
-		/*================ Fungsi untuk GET DATA Tipe ER ================*/
-
-		$this->db->from('tipe_er_list');
-		$this->db->where('deleted','0');
-		$this->db->order_by('TIPE_ER', 'asc');
-		$query = $this->db->get();
-
-		return $query->result();
-
-		/*================ Fungsi untuk GET DATA Tipe ER ================*/
-
-	}
-
-	public function getChecker($check)
-	{
-		/*================ Fungsi untuk GET DATA Checker ================*/
-
-		$this->db->select('CHECKER, VALIDATOR1, VALIDATOR2');
-		$this->db->from('checker');
-		$this->db->where('deleted','0');
-		$this->db->order_by('CHECKER', 'ASC');
-		$this->db->like('CHECKER', $check);
-		$this->db->limit(1);
-		$query = $this->db->get();
-
-		if($query->num_rows() > 0){
-   		foreach ($query->result() as $key => $value) {
-    	$data = array('checker' => $value->CHECKER, 
-    				  'validator1' => $value->VALIDATOR1, 
-    				  'validator2' => $value->VALIDATOR2
-    				);              
-   		}
-
-		} else {
-   		$data = array('checker' => 'Checker Tidak Ditemukan');
-		}
-
-		return json_encode($data);
-
-		/*================ Fungsi untuk GET DATA Checker ================*/
-
-	}
 
 }
 

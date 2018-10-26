@@ -46,7 +46,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                             <div class="col-md-6 col-md-offset-3">
                                 <div class="text-center alert alert-info">
                                   <h2>
-                                    <font class="text-center text-primary">Hak Akses
+                                    <font class="text-center text-primary">Tambah, Edit, Delete <b>Hak Akses</b>
                                     </font>
                                   </h2>
                                 </div>
@@ -59,7 +59,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                         </div>
                 <div class="row">
 
-                  <div class="col-md-3 col-md-offset-3">
+                  <div class="col-md-4 col-md-offset-4">
 
                                 <div class="form-group">
                                 <label class="control-label">NO HP</label>
@@ -154,7 +154,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                   </div>
                 </div> 
             
-</div></div>
+
     
            
           </div><!-- /.page-content -->

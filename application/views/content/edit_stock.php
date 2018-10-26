@@ -45,6 +45,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                    <input type="hidden" id="stock" value="<?=$stock['qty'];?>"/>
                    <input type="hidden" name="id_kategori" id="id_kategori" value="<?=$stock['id_kategori'];?>"/>
                     <input type="hidden" name="id_barang" id="id_barang" value="<?=$stock['id_barang'];?>"/>
+                    <input type="hidden" id="id_barang1" value="<?=$this->uri->segment(3);?>"/>
                     <div class="row">
                             <div class="col-md-6 col-md-offset-3">
                                 <div class="text-center alert alert-info">
@@ -71,10 +72,12 @@ $csrf_hash = $this->security->get_csrf_hash();
                             </div>
                             </div>
 
-                              <div class="col-md-3">
+                              <div class="col-md-3" id="stock">
                                 <div class="form-group">
                                 <label class="control-label">Stock</label>
-                                <input type="text" class="form-control" value="<?=$stock['qty'];?>" readonly/>
+                                <div id="update_stock">
+                                <input type="text" class="form-control" value="<?=$stock['qty'];?>" id="stock" readonly/>
+                                </div>
                                  <span class="help-block" id="error"></span>
                             </div>
                             </div>

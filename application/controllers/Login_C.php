@@ -47,34 +47,39 @@ class Login_C extends CI_Controller {
         $level = $row['level'];
         }
         if($status=='0'){
-             $this->session->set_flashdata('pesan_error', '<div class="alert alert-danger text-center">Akun ini sudah tidak aktif</div>');
-             
-           redirect("");           //cek aktif, apakah login tersebut masih aktif atau tidak 
+               
+            echo 'inactive';
+           
           } elseif($level=='Anggota'){
             $data_session = array(
                 'no_hp' => $no_hp,
                 'login_member' => "true"
                 );
- 
-            $this->session->set_userdata($data_session); //jika username dan password benar, status nya aktiv
+                
+                $this->session->set_userdata($data_session); //jika username dan password benar, status nya aktiv
                                                          //maka pasang fungsi SESSION
  
-            redirect("Home/index");
+           
+            echo 'anggota';
+ 
+            
         } elseif($level=='Admin'){
             $data_session = array(
                 'no_hp' => $no_hp,
                 'login_admin' => "true"
                 );
- 
-            $this->session->set_userdata($data_session); //jika username dan password benar, status nya aktiv
+        
+        $this->session->set_userdata($data_session); //jika username dan password benar, status nya aktiv
                                                          //maka pasang fungsi SESSION
+          
+            echo 'admin';
  
-            redirect("Admin/index");
+          
         }
         }else{
-            $this->session->set_flashdata('pesan_error', '<div class="alert alert-danger text-center">
-                <strong>No HP</strong> atau <strong>Password</strong> anda salah</div>');
-           redirect("");
+          
+           
+           echo 'salah';
         }
 
       /*============= END Fungsi untuk cek Login =============*/

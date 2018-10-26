@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `u422738906_stock`
 --
-CREATE DATABASE IF NOT EXISTS `u422738906_stock` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `efk-stock` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 USE `u422738906_stock`;
 
 -- --------------------------------------------------------

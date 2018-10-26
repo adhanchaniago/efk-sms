@@ -33,6 +33,7 @@ $csrf_hash = $this->security->get_csrf_hash();
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
  
     <link rel="stylesheet" href="<?=base_url('template/assets/css/reset.min.css');?>">
+    <link rel="stylesheet" href="<?=base_url('template/assets/css/toastr.css');?>" />
 
   
       <style>
@@ -299,7 +300,7 @@ strong {
 
 <body translate="no" >
 
-  <form method="POST" action="<?=base_url('login/login');?>" id="login-form">
+  <form method="POST" id="login-form">
 
 <label for="loginEmail" id="loginEmailLabel" class="text-center">LOGIN</label>
 <hr>
@@ -436,7 +437,13 @@ strong {
 	
 </form>
 <script src="<?=base_url('template/assets/js/jquery-2.1.4.min.js');?>"></script>
-
+<script src="<?=base_url('template/assets/js/toastr.min.js');?>"></script>
+<script type="text/javascript">
+     $(document).ready(function(){
+        toastr.error('Aplikasi ini masih dalam tahap Development. <br>Semua Data yang ada akan di Reset', '[Reminder]', { timeOut: 9500 });
+        
+     });
+     </script>
 <script type="text/javascript">
 		$('#login-form').submit(function(){
 
@@ -465,11 +472,89 @@ strong {
       $('#pesan_error').html('<div class="alert alert-danger text-center"><strong>Password</strong> Minimal 6 Karakter</div>');
       $('#loginPassword').focus();
     } else {
-			return true;
+            
+            ajax();
+			return false;
 		}
 
 		return false;
 	});
+	
+	function ajax(){
+	    var data = $("#login-form").serialize();
+	    //var username = $('loginEmail').val();
+	    //var password = $('loginPassword').val();
+        var url = "<?=base_url('login/login');?>";
+      $.ajax({
+        
+      type : 'POST',
+      url  : url,
+      data : data,
+      beforeSend: function()
+      { 
+        $("#error").fadeOut();
+        $("#login").html('Logging In...').prop('disabled', true);
+      },
+     
+     statusCode: {
+    403: function() {
+         $("#login").html('Log In').prop('disabled', false);           
+      
+        $("#pesan_error").html('<div class="alert alert-danger text-center"><strong>Session</strong>Anda Habis, Silahkan Reload Halaman Ini</div>');
+    }
+  },
+	
+	success :  function(response)
+         {
+             
+            // var response = 'anggota';
+            //alert(response);
+             if(response=="anggota"){
+                  
+           
+        $("#login").html('Success!').prop('disabled', true);
+        $("#pesan_error").html('');
+         toastr.success('Log In Success!', {timeOut: 5000});
+         var redirect = "<?=base_url('Home/index');?>";
+         setTimeout(function(){window.top.location=redirect} , 500);
+        
+        
+          } else if(response=="admin"){
+                  
+           
+        $("#login").html('Success!').prop('disabled', true);
+        $("#pesan_error").html('');
+        toastr.success('Log In Success!', {timeOut: 5000});
+         var redirect = "<?=base_url('Admin/index');?>";
+         setTimeout(function(){window.top.location=redirect} , 500);
+        
+        
+       
+        
+          }
+          if(response=="inactive"){
+                  
+           
+        $("#login").html('Log In').prop('disabled', false);
+        toastr.error('Maaf, akun ini sudah tidak aktif', {timeOut: 5000});
+        //$("#pesan_error").html('<div class="alert alert-danger text-center">Maaf, akun ini sudah tidak aktif</div> ');
+        //setTimeout(function(){location.href="Home/index"} , 500);   
+        
+        
+       
+        
+          }
+           else if(response=="salah"){
+                  
+             $("#login").html('Log In').prop('disabled', false);
+             toastr.error('<strong>Username </strong>atau <strong>Kata Sandi</strong> kamu salah!', {timeOut: 5000});
+            //$("#pesan_error").html('<div class="alert alert-danger text-center"><strong>Email </strong>atau <strong>Kata Sandi</strong> kamu salah!</div>');
+           
+          }
+         }
+	
+      });
+	}
 </script>
     <script src="<?=base_url('template/assets/js/codepen.js');?>"></script>
 

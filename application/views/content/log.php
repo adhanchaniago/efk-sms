@@ -56,7 +56,7 @@ $csrf_hash = $this->security->get_csrf_hash();
      
             <!-- ============================== FORM ============== -->
                         
-        <div class="widget-box transparent">
+        <div class="widget-box transparent" id="media">
                        
                         <div class="widget-body">
                           <div class="widget-main padding-8">
@@ -67,7 +67,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                                  
                                 
                                 <div>
-                                  <img class="pull-left" alt="Alex Doe's avatar" src="<?=base_url('foto_anggota/'.$data->foto);?>" />
+                                  <img class="pull-left" alt="<?=$data->nama_anggota;?>" src="<?=base_url('foto_anggota/'.$data->foto);?>" />
                                   <a class="user" href="#"> <?=$data->nama_anggota;?> </a>
                                   <?php if($data->in_stock!='') {
                                     echo '<font class="text-primary">'.$data->keterangan.' <strong>(IN)</strong></font> <strong>('.$data->nama_barang.' - '.
@@ -94,8 +94,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                       </div>
 
             
-</div></div>
-    
+
            
           </div><!-- /.page-content -->
         </div>

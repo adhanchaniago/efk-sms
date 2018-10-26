@@ -114,7 +114,7 @@ $csrf_hash = $this->security->get_csrf_hash();
                   </div>
                 </div> 
             
-</div></div>
+
     
            
           </div><!-- /.page-content -->

@@ -42,7 +42,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 							
 
 								<li>
-									<a href="<?=base_url('Admin/profil');?>">
+									<a href="<?=base_url('Admin/profile');?>">
 										<i class="ace-icon fa fa-user-circle-o"></i>
 										Profile
 									</a>
@@ -187,7 +187,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 								<b class="arrow"></b>
 							</li>
 
-							
+						
 
 							
 						</ul>
@@ -204,9 +204,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					?>
 						<a href="<?php echo base_url('Admin/log');?>">
 							<i class="menu-icon fa fa-file-text"></i>
-							<span class="menu-text"> Aktivitas Stock </span>
+							<span class="menu-text"> Log Stock </span>
+						</a>
+                    
+                    	<?php if($url=='Admin/report' OR $url=='admin/report'){
+					echo '<li class="active">';
+					 } else { 
+					echo '<li class="">';
+				}
+					?>
+						<a href="<?php echo base_url('Admin/report');?>">
+							<i class="menu-icon fa fa-file-excel-o"></i>
+							<span class="menu-text"> Report </span>
 						</a>
 
+						<b class="arrow"></b>
+					</li>
 						<b class="arrow"></b>
 					</li>
 				</ul><!-- /.nav-list -->

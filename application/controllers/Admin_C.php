@@ -5,12 +5,13 @@ use SMSGatewayMe\Client\ApiClient;
 use SMSGatewayMe\Client\Configuration;
 use SMSGatewayMe\Client\Api\MessageApi;
 use SMSGatewayMe\Client\Model\SendMessageRequest;
+
 class Admin_C extends CI_Controller {
 
   public function __construct(){
     parent::__construct();
     $this->load->model('Admin_M');
-    //$this->load->library('email');
+    $this->load->library('email');
     $this->load->library('Check_login_admin');
     //$this->cekPendaftaran();
     //$this->load->helper('tanggal');
@@ -28,6 +29,38 @@ class Admin_C extends CI_Controller {
 
     /*============= END Fungsi untuk memanggil halaman Index =============*/
   }
+  
+  public function report(){
+        /*================ Fungsi untuk memanggil halaman Index ================*/
+
+       
+        $data['url'] = $this->uri->uri_string();
+        
+        $tgl_awal = $this->input->post('tgl_awal');
+        $tgl_akhir = $this->input->post('tgl_akhir');
+        $data['tgl_awal'] =  $tgl_awal;
+        $data['tgl_akhir'] = $tgl_akhir;
+       
+
+        if(empty($tgl_awal) AND empty($tgl_akhir)){
+           $data['title'] = 'Report - '.project_name;
+           } else {
+                 
+            $data['report'] = $this->Admin_M->getReport($tgl_awal, $tgl_akhir);
+            $data['title'] = 'Laporan Tanggal : '.$tgl_awal.' Sampai '.$tgl_akhir;
+            
+           /* foreach(json_decode($data['report']) as $key){
+                echo $key->nama_barang;
+            }
+            
+            echo '<pre>';print_r($data['report']);die;*/
+          
+           }
+        //$this->CekProfil();
+        $this->template->display('content/report',$data);
+        
+        /*================ Fungsi untuk memanggil halaman Index ================*/
+    }
 
   public function akses(){
     /*============= START Fungsi untuk memanggil halaman Index =============*/
@@ -129,7 +162,7 @@ class Admin_C extends CI_Controller {
         $data['title'] = 'Log - '.project_name;
         $data['url'] = $this->uri->uri_string();
         //$kategori = 'ATK';
-        $data['list_data'] = $this->Admin_M->listLog();
+        //$data['list_data'] = $this->Admin_M->listLog();
 
         //$this->CekProfil();
         $this->template->display('content/log',$data);
@@ -192,14 +225,28 @@ class Admin_C extends CI_Controller {
     
   }
   
-   public function insert_callback($no_hp,$sendMessages){
+   public function insert_callback($no_hp,$id){
     //$date = date("Y-m-d H:i:s", strtotime('+7 hours'));
    // $no_hp = $this->input->post('no_hp');
     //$password = $this->acak('6');
-    $data = array(  'no_hp' => $no_hp,
-            'callback' => $sendMessages
+   
+        $config = Configuration::getDefaultConfiguration();
+  $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyOTQ2MTMzMCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.GYTnU64BitOVxhksHyG3Dux4TSC4ZeH_vjc6DkD4qwc');
+$apiClient = new ApiClient($config);
+$messageClient = new MessageApi($apiClient);
+
+// Get SMS Message Information
+$message = $messageClient->getMessage($id);   
+
+$status = $message['status'];       
+
+        $data = array(  'no_hp' => $no_hp,
+            'callback' => $id,
+            'status' => $status
 
            );
+
+//$this->cekCallback($id);
     
     
       $insert = $this->Admin_M->Insert('smsgateway_callback',$data);
@@ -369,7 +416,7 @@ class Admin_C extends CI_Controller {
 
   public function send($no_hp,$password){
    $config = Configuration::getDefaultConfiguration();
-    $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyNjc4NzE0NSwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.3ZMlXKv8EZXZ45QNzAHyq1ejWuFKF2PaEbKVkPzygxQ');
+    $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyOTQ2MTMzMCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.GYTnU64BitOVxhksHyG3Dux4TSC4ZeH_vjc6DkD4qwc');
     $apiClient = new ApiClient($config);
     $messageClient = new MessageApi($apiClient);
     $url = "https://bit.ly/2Gz1kTV";
@@ -378,20 +425,25 @@ class Admin_C extends CI_Controller {
     $sendMessageRequest1 = new SendMessageRequest([
         'phoneNumber' => $no_hp,
         'message' => $msg,
-        'deviceId' => 83493
+        'deviceId' => 103936
     ]);
 
     $sendMessages = $messageClient->sendMessages([
         $sendMessageRequest1
     ]);
     
-    $this->insert_callback($no_hp,print_r($sendMessages));
+    foreach($sendMessages as $value){
+    $id = $value['id'];
+    //$status = $value['status'];
+}
+    
+    $this->insert_callback($no_hp,$id);
     //print_r($sendMessages);
             }
 
           public function tes(){
    $config = Configuration::getDefaultConfiguration();
-    $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyNjc4NzE0NSwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.3ZMlXKv8EZXZ45QNzAHyq1ejWuFKF2PaEbKVkPzygxQ');
+    $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyOTQ2MTMzMCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.GYTnU64BitOVxhksHyG3Dux4TSC4ZeH_vjc6DkD4qwc');
     $apiClient = new ApiClient($config);
     $messageClient = new MessageApi($apiClient);
     $no_hp = '089687610639';
@@ -401,7 +453,7 @@ class Admin_C extends CI_Controller {
     $sendMessageRequest1 = new SendMessageRequest([
         'phoneNumber' => $no_hp,
         'message' => $msg,
-        'deviceId' => 83493
+        'deviceId' => 103936
     ]);
 
     $sendMessages = $messageClient->sendMessages([
@@ -445,43 +497,124 @@ class Admin_C extends CI_Controller {
 
     /*============= END Fungsi untuk memanggil halaman Index =============*/
   }
-
-
-  public function balas_email($email, $pesan, $balasan,$nama){
-    $htmlContent = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>Balasan Pesan</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0 " />
-    <meta name="format-detection" content="telephone=no" />
-    <!--[if !mso]><!-->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!--<![endif]-->
-    <body style="margin:0px; padding:0px;" bgcolor="#ffffff">
-    Halo < '.$nama.' > <br><br>
-    Terkait dengan pesan kamu sebelumnya. <br><br>
-    Pesan Kamu : '.$pesan.'. <br><br>
-    Jawaban Kami : '.$balasan.'.
-    </body>
-</html>';
-
-$config = Array(        
+  
+  public function backup_db(){
+    $date = date("d-m-Y H:i:s", strtotime('+7 hours'));
+    $date_only = date('d-m-Y');
+      $filename = 'database_backup_'.$date.'.sql';
+      $this->load->dbutil();
+   
+     $prefs = array(
+       'format' => 'zip',
+       'filename' => $filename
+     );
+   
+     $backup =& $this->dbutil->backup($prefs);
+   
+     $db_name = 'database_backup_' . $date . '.zip'; // file name
+     $save  = "/home/u422738906/public_html/backup_db/".$db_name; // dir name backup output destination
+      
+     $this->load->helper('file');
+     
+    //$data = 'Some file data';
+//$data = 'Some file data';
+if ( ! write_file($save, $backup))
+{ 
+  $config = Array(        
            
             'mailtype'  => 'html', 
             'charset'   => 'iso-8859-1',
             'priority'  => 1
         );
 $this->email->initialize($config);
-$this->email->to($email);
-$this->email->from('mailer@jujitsu-upn.online','Jujitsu UPN Mailer');
-$this->email->subject('Balasan Pesan');
-$this->email->message($htmlContent);
-$this->email->send();
-  }
+$this->email->to('bernandotorrez4@gmail.com');
+$this->email->from('job@efk-stock.online','Automatic Job for Backup Database');
+$this->email->subject('Database Backup Failed');
 
- 
+$this->email->message('Database Backup Failed');
+//$this->email->attach($save);
+//$this->email->attach($attach1);
+if(!$this->email->send()){
+$this->email->print_debugger();
+}
+}
+else
+{
   
+        $config = Array(        
+           
+            'mailtype'  => 'html', 
+            'charset'   => 'iso-8859-1',
+            'priority'  => 1
+        );
+$this->email->initialize($config);
+$this->email->to('bernandotorrez4@gmail.com');
+$this->email->from('job@efk-stock.online','Automatic Job for Backup Database');
+$this->email->subject('Database Backup '.$date_only);
+
+$this->email->message('Database Backup Success');
+$this->email->attach($save);
+//$this->email->attach($attach1);
+if(!$this->email->send()){
+$this->email->print_debugger();
+}
+}
+  }
+  
+  public function tescallback(){
+      // Configure client
+$config = Configuration::getDefaultConfiguration();
+  $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyOTQ2MTMzMCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.GYTnU64BitOVxhksHyG3Dux4TSC4ZeH_vjc6DkD4qwc');
+$apiClient = new ApiClient($config);
+$messageClient = new MessageApi($apiClient);
+
+// Sending a SMS Message
+$sendMessageRequest1 = new SendMessageRequest([
+    'phoneNumber' => '089687610639',
+    'message' => 'test1',
+    'deviceId' => 103936
+]);
+
+$sendMessages = $messageClient->sendMessages([
+    $sendMessageRequest1
+]);
+
+
+foreach($sendMessages as $value){
+    $id = $value['id'];
+}
+
+//echo '<pre>';print_r($sendMessages);
+
+//$this->cekCallback($id);
+
+/*$messageClient = new MessageApi($apiClient);
+
+// Get SMS Message Information
+$message = $messageClient->getMessage($msg_id);
+echo '<pre>';
+print_r($message);*/
+  }
+  
+  public function cekCallback($id){
+      // Configure client
+$config = Configuration::getDefaultConfiguration();
+  $config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTUyOTQ2MTMzMCwiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjQ3OTgyLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.GYTnU64BitOVxhksHyG3Dux4TSC4ZeH_vjc6DkD4qwc');
+$apiClient = new ApiClient($config);
+$messageClient = new MessageApi($apiClient);
+
+// Get SMS Message Information
+$message = $messageClient->getMessage(68105816);
+
+foreach($message as $value){
+    echo $value;
+}
+
+echo $message['status'];
+
+echo '<pre>';
+print_r($message);
+  }
+ 
 
 }

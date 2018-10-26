@@ -232,7 +232,7 @@ $("#min_out").click(function(){
             "extend": "colvis",
             "text": "<i class='fa fa-search bigger-110 blue'></i> <span class='hidden'>Show/hide columns</span>",
             "className": "btn btn-white btn-primary btn-bold",
-            columns: ':not(:first):not(:last)'
+            columns: ':not(:last)'
             },
             {
             "extend": "copy",
@@ -242,16 +242,23 @@ $("#min_out").click(function(){
             {
             "extend": "csv",
             "text": "<i class='fa fa-database bigger-110 orange'></i> <span class='hidden'>Export to CSV</span>",
-            "className": "btn btn-white btn-primary btn-bold"
+            "className": "btn btn-white btn-primary btn-bold",
+             exportOptions: {
+             
+                columns: ':not(:last)'
+              
+            }
             },
             {
             "extend": "excel",
             "text": "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>Export to Excel</span>",
             "className": "btn btn-white btn-primary btn-bold",
             exportOptions: {
+                columns: ':not(:last)',
               modifier: {
                 search: 'applied',
                 order: 'applied'
+                
               }
             }
             },
@@ -265,7 +272,12 @@ $("#min_out").click(function(){
             "text": "<i class='fa fa-print bigger-110 grey'></i> <span class='hidden'>Print</span>",
             "className": "btn btn-white btn-primary btn-bold",
             autoPrint: false,
-            message: 'This print was produced using the Print button for DataTables'
+           /* message: 'This print was produced using the Print button for DataTables',
+             columns: ':not(:first):not(:last)'*/
+             exportOptions: {
+                    columns: ':not(:last)'
+                }
+                
             }     
           ]
         } );

@@ -52,6 +52,8 @@
 
     jQuery(function($) {
         //initiate dataTables plugin
+        var val_tgl_awal = "<?=$this->input->post('tgl_awal');?>";
+        var val_tgl_akhir = "<?=$this->input->post('tgl_akhir');?>";
         var myTable = 
         $('#dynamic-table')
         //.wrap("<div class='dataTables_borderWrap' />")   //if you are applying horizontal scrolling (sScrollX)
@@ -61,7 +63,7 @@
           bAutoWidth: true,
           "aoColumns": [
             { "bSortable": null },
-            null, null,null, null, null, null, null,null, null, null, null,null, null,null, null, null, null, null,null, null, null, null,null,null,null,null,null,
+            null, null,null, null, null, null, null,null, null,
             { "bSortable": false }
           ],
           "aaSorting": [],
@@ -113,11 +115,8 @@
             "extend": "excel",
             "text": "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>Export to Excel</span>",
             "className": "btn btn-white btn-primary btn-bold",
-            exportOptions: {
-              modifier: {
-                search: 'applied',
-                order: 'applied'
-              }
+            action: function ( e, dt, button, config ) {
+            window.location = 'ExcelReport/'+val_tgl_awal+'/'+val_tgl_akhir;
             }
             },
             {

@@ -70,7 +70,7 @@ class SmsGateway_C extends CI_Controller {
           $tanggal1 = date("Y-m-d H:i:s");
           $tanggal2 = date('Y-m-d', strtotime($tanggal1));
           $date = $this->tanggal_indo($tanggal2, true);
-          $deviceID = 83493;
+          $deviceID = 103936;
           $number = '+6289687610639';
           $message = '[Test SMS Gateway] Halo Bernand , Hari ini : '.$date.' akan diadakan latihan, jangan lupa latihan yah!';
 
@@ -102,7 +102,7 @@ class SmsGateway_C extends CI_Controller {
           $tanggal2 = date('Y-m-d', strtotime($tanggal1));
           $date = $this->tanggal_indo($tanggal2, true);
           //$kontak = $this->list_nohp();
-          $deviceID = 83493;
+          $deviceID = 103936;
           $contact = $this->SmsGateway_M->list_contact();
 
           foreach($contact->result() as $data){
