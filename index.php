@@ -1,4 +1,10 @@
 <?php
+if (function_exists('header_remove')) {
+    header_remove('X-Powered-By'); // PHP 5.3+
+} else {
+    @ini_set('expose_php', 'off');
+}
+
 /**
  * CodeIgniter
  *
@@ -55,7 +61,7 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
 
 /*
  *---------------------------------------------------------------
